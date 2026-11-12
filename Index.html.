@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS AI Assistant</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  background: #06111f;
+  color: #00eaff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+h1 {
+  margin-top: 45px;
+  letter-spacing: 7px;
+  font-size: 36px;
+}
+
+.circle {
+  width: 155px;
+  height: 155px;
+  border: 4px solid #00eaff;
+  border-radius: 50%;
+  margin: 40px auto;
+  box-shadow: 0 0 30px #00eaff;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 10px #00eaff; }
+  to { box-shadow: 0 0 35px #00eaff; }
+}
+
+#status {
+  color: white;
+  margin: 25px;
+  min-height: 24px;
+}
+
+button {
+  background: #00eaff;
+  color: #06111f;
+  border: none;
+  padding: 16px 25px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 8px;
+}
+
+#heard {
+  color: white;
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>J.A.R.V.I.S</h1>
+
+<div class="circle"></div>
+
+<h3>PERSONAL AI ASSISTANT</h3>
+
+<p id="status">SYSTEM READY</p>
+
+<button onclick="activateJarvis()">
+ACTIVATE JARVIS
+</button>
+
+<p id="heard">Awaiting command...</p>
+
+<script>
+const statusText = document.getElementById("status");
+const heardText = document.getElementById("heard");
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+let recognition = null;
+let busy = false;
+
+function speak(message) {
+  return new Promise(resolve => {
+    speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = "en-IN";
+    speech.rate = 1;
+
+    speech.onend = resolve;
+    speech.onerror = resolve;
+
+    speechSynthesis.speak(speech);
+  });
+}
+
+function answer(command) {
+  if (command.includes("hello")) {
+    return "Hello Sir. How can I help you?";
+  }
+
+  if (command.includes("time")) {
+    return "The time is " +
+      new Date().toLocaleTimeString("en-IN");
+  }
+
+  if (command.includes("date")) {
+    return "Today's date is " +
+      new Date().toLocaleDateString("en-IN");
+  }
+
+  if (command.includes("who are you")) {
+    return "I am Jarvis, your personal assistant.";
+  }
+
+  if (command.includes("how are you")) {
+    return "All systems are ready, Sir.";
+  }
+
+  if (command.includes("help")) {
+    return "You can ask me the time, date, or say hello.";
+  }
+
+  return "Sorry Sir, I don't understand that command yet.";
+}
+
+function activateJarvis() {
+  if (!SpeechRecognition) {
+    statusText.innerText =
+      "VOICE RECOGNITION NOT SUPPORTED";
+    return;
+  }
+
+  if (busy) return;
+
+  busy = true;
+
+  if (!recognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = function() {
+      statusText.innerText = "LISTENING...";
+    };
+
+    recognition.onresult = async function(event) {
+      const command =
+        event.results[0][0].transcript.toLowerCase();
+
+      heardText.innerText = "YOU SAID: " + command;
+      statusText.innerText = "THINKING...";
+
+      await speak(answer(command));
+
+      statusText.innerText = "SYSTEM READY";
+      busy = false;
+    };
+
+    recognition.onerror = function(event) {
+      statusText.innerText = "ERROR: " + event.error;
+      busy = false;
+    };
+
+    recognition.onend = function() {
+      busy = false;
+      if (statusText.innerText === "LISTENING...") {
+        statusText.innerText = "TAP TO TRY AGAIN";
+      }
+    };
+  }
+
+  try {
+    recognition.start();
+  } catch (error) {
+    statusText.innerText = "PLEASE TRY AGAIN";
+    busy = false;
+  }
+}
+</script>
+
+</body>
+</html>
