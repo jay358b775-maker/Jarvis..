@@ -104,35 +104,44 @@ function speak(message) {
   });
 }
 
+
 function answer(command) {
-  if (command.includes("hello")) {
+  if (command.includes("hello"))
     return "Hello Sir. How can I help you?";
-  }
 
-  if (command.includes("time")) {
-    return "The time is " +
-      new Date().toLocaleTimeString("en-IN");
-  }
+  if (command.includes("time"))
+    return "The time is " + new Date().toLocaleTimeString("en-IN");
 
-  if (command.includes("date")) {
-    return "Today's date is " +
-      new Date().toLocaleDateString("en-IN");
-  }
+  if (command.includes("date"))
+    return "Today's date is " + new Date().toLocaleDateString("en-IN");
 
-  if (command.includes("who are you")) {
+  if (command.includes("who are you"))
     return "I am Jarvis, your personal assistant.";
-  }
 
-  if (command.includes("how are you")) {
-    return "All systems are ready, Sir.";
-  }
+  if (command.includes("how are you"))
+    return "All systems are running perfectly, Sir.";
 
-  if (command.includes("help")) {
-    return "You can ask me the time, date, or say hello.";
-  }
+  if (command.includes("your name"))
+    return "My name is Jarvis.";
+
+  if (command.includes("who created you"))
+    return "You are building me, Sir.";
+
+  if (command.includes("good morning"))
+    return "Good morning, Sir. Have a productive day.";
+
+  if (command.includes("thank you"))
+    return "You are welcome, Sir.";
+
+  if (command.includes("joke"))
+    return "Why did the computer go to the doctor? Because it had a virus.";
+
+  if (command.includes("help"))
+    return "Ask me the time, date, my name, or tell me to say a joke.";
 
   return "Sorry Sir, I don't understand that command yet.";
-}
+  }
+  
 
 function activateJarvis() {
   if (!SpeechRecognition) {
