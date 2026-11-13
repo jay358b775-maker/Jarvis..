@@ -4,599 +4,585 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06111f">
 <title>JARVIS — Personal AI</title>
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  padding: 22px 14px;
-  background: #06111f;
-  color: #eafaff;
-  font-family: Arial, sans-serif;
+*{box-sizing:border-box}
+body{
+ margin:0;background:#06111f;color:#eafaff;
+ font-family:Arial,sans-serif;padding:18px;
 }
-
-h1, h2, h3 { color: #00eaff; }
-h1 { text-align: center; letter-spacing: 6px; margin-top: 25px; }
-
-header { text-align: center; }
-
-.circle {
-  width: 125px;
-  height: 125px;
-  border: 4px solid #00eaff;
-  border-radius: 50%;
-  margin: 28px auto;
-  box-shadow: 0 0 30px #00eaff;
-  animation: glow 2s infinite alternate;
+header{text-align:center;padding:20px 0}
+h1{letter-spacing:6px;color:#00eaff}
+h2,h3{color:#00eaff}
+.circle{
+ width:110px;height:110px;border:3px solid #00eaff;
+ border-radius:50%;margin:20px auto;
+ box-shadow:0 0 30px #00eaff;
+ animation:glow 2s infinite alternate;
 }
-
-@keyframes glow {
-  to { box-shadow: 0 0 40px #00eaff; }
+@keyframes glow{to{box-shadow:0 0 45px #00eaff}}
+#status,#heard{text-align:center;min-height:22px}
+button{
+ background:#00eaff;color:#06111f;border:0;
+ padding:12px 16px;border-radius:8px;
+ font-weight:bold;margin:5px;cursor:pointer;
 }
-
-#status, #heard {
-  text-align: center;
-  color: white;
-  min-height: 24px;
+.secondary{background:#15334a;color:#00eaff;border:1px solid #00eaff}
+.panel{
+ background:#0b1d30;border:1px solid #16415b;
+ border-radius:14px;padding:17px;margin:16px auto;
+ max-width:900px;
 }
-
-button {
-  background: #00eaff;
-  color: #06111f;
-  border: 0;
-  padding: 13px 18px;
-  border-radius: 9px;
-  font-weight: bold;
-  margin: 6px 3px;
-  cursor: pointer;
+.grid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+ gap:12px;
 }
-
-button.secondary {
-  background: #15334a;
-  color: #00eaff;
-  border: 1px solid #00eaff;
+.tile{
+ background:#10283e;border:1px solid #1c526d;
+ border-radius:12px;padding:15px;min-height:115px;
 }
-
-.panel {
-  background: #0b1d30;
-  border: 1px solid #16415b;
-  border-radius: 15px;
-  padding: 17px;
-  margin: 22px auto;
-  max-width: 850px;
+.tile p,.small{color:#9bb9ca;font-size:13px;line-height:1.5}
+input,textarea,select{
+ width:100%;display:block;background:#06111f;
+ color:white;border:1px solid #28516a;
+ border-radius:8px;padding:12px;margin:8px 0 15px;
+ font:inherit;
 }
-
-input, textarea, select {
-  display: block;
-  width: 100%;
-  background: #06111f;
-  color: white;
-  border: 1px solid #28516a;
-  border-radius: 8px;
-  padding: 13px;
-  margin: 9px 0 16px;
-  font: inherit;
+textarea{min-height:100px}
+label{font-size:14px;color:#bcefff}
+nav{
+ display:flex;flex-wrap:wrap;justify-content:center;
+ gap:5px;max-width:950px;margin:auto;
 }
-
-textarea { min-height: 100px; resize: vertical; }
-
-label { color: #bcefff; font-size: 14px; }
-
-iframe {
-  width: 100%;
-  height: 470px;
-  background: white;
-  border: 2px solid #00eaff;
-  border-radius: 10px;
+nav button{flex:1;min-width:95px}
+.page{display:none}
+.page.active{display:block}
+iframe{
+ width:100%;height:430px;background:white;
+ border:2px solid #00eaff;border-radius:9px;
 }
-
-.small {
-  color: #9bb9ca;
-  font-size: 13px;
-  line-height: 1.5;
+#output{min-height:180px;font-family:monospace}
+.status{
+ color:#ffcf70;font-size:12px;
 }
-
-#output { min-height: 180px; font-family: monospace; }
-
-footer { text-align: center; color: #7894a5; padding: 25px; }
+footer{text-align:center;color:#7894a5;padding:25px}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>J.A.R.V.I.S</h1>
-  <div class="circle"></div>
-  <h3>PERSONAL AI SYSTEM</h3>
-  <p id="status">SYSTEM READY</p>
-  <button onclick="activateJarvis()">ACTIVATE JARVIS</button>
-  <p id="heard">Awaiting command...</p>
+ <h1>J.A.R.V.I.S</h1>
+ <div class="circle"></div>
+ <h3>PERSONAL AI SYSTEM</h3>
+ <p id="status">SYSTEM READY</p>
+ <button onclick="activateJarvis()">ACTIVATE VOICE</button>
+ <button class="secondary" onclick="stopVoice()">STOP VOICE</button>
+ <p id="heard">Awaiting command...</p>
 </header>
 
-<section class="panel">
-  <h2>01 — WEBSITE STUDIO</h2>
-  <p class="small">
-    Create responsive starter websites for businesses, products,
-    portfolios and more.
-  </p>
+<nav>
+ <button onclick="showPage('home')">HOME</button>
+ <button onclick="showPage('brain')">AI BRAIN</button>
+ <button onclick="showPage('web')">WEBSITES</button>
+ <button onclick="showPage('business')">BUSINESS</button>
+ <button onclick="showPage('media')">MEDIA</button>
+ <button onclick="showPage('memory')">MEMORY</button>
+</nav>
 
-  <label>Website / business name</label>
-  <input id="siteName" placeholder="Example: Nova Fitness">
+<!-- HOME -->
+<section class="panel page active" id="home">
+ <h2>JARVIS COMMAND CENTER</h2>
+ <p class="small">Your personal assistant dashboard.</p>
 
-  <label>Website type</label>
-  <select id="siteType">
-    <option value="business">Business website</option>
-    <option value="restaurant">Restaurant</option>
-    <option value="fitness">Gym / Fitness</option>
-    <option value="portfolio">Personal portfolio</option>
-    <option value="agency">Creative agency</option>
-    <option value="product">Product landing page</option>
-  </select>
+ <div class="grid">
+  <div class="tile">
+   <h3>AI Brain</h3>
+   <p>Reasoning service connection required.</p>
+  </div>
+  <div class="tile">
+   <h3>Website Studio</h3>
+   <p>Create and export websites.</p>
+  </div>
+  <div class="tile">
+   <h3>Shopify</h3>
+   <p>Store creation tools planned.</p>
+  </div>
+  <div class="tile">
+   <h3>YouTube</h3>
+   <p>Channel connection required.</p>
+  </div>
+  <div class="tile">
+   <h3>Video Editor</h3>
+   <p>Video editing integration planned.</p>
+  </div>
+  <div class="tile">
+   <h3>Advertising</h3>
+   <p>Ad creation studio planned.</p>
+  </div>
+ </div>
 
-  <label>Describe the website</label>
-  <textarea id="siteDescription"
-    placeholder="Example: A modern fitness gym with personal training, group classes and friendly coaches."></textarea>
-
-  <label>Choose a design style</label>
-  <select id="siteStyle">
-    <option value="dark">Premium dark</option>
-    <option value="light">Clean and modern</option>
-    <option value="luxury">Luxury</option>
-    <option value="nature">Fresh and natural</option>
-  </select>
-
-  <label>Contact email (optional)</label>
-  <input id="siteEmail" type="email"
-    placeholder="hello@example.com">
-
-  <button onclick="buildWebsite()">BUILD WEBSITE</button>
-  <button class="secondary" onclick="resetBuilder()">RESET</button>
+ <h3>Quick command</h3>
+ <input id="quickCommand" placeholder="Type a command...">
+ <button onclick="runCommand()">EXECUTE</button>
+ <p id="commandResult" class="small"></p>
 </section>
 
-<section class="panel">
-  <h2>02 — LIVE PREVIEW</h2>
-  <p class="small">Check the design before exporting it.</p>
-  <iframe id="preview" title="Website preview" sandbox=""></iframe>
+<!-- AI BRAIN -->
+<section class="panel page" id="brain">
+ <h2>01 — AI BRAIN</h2>
+ <p>JARVIS's reasoning engine will connect here.</p>
+
+ <p class="status">STATUS: AI MODEL NOT CONNECTED</p>
+
+ <label>Ask JARVIS</label>
+ <textarea id="question" placeholder="What would you like JARVIS to help you with?"></textarea>
+ <button onclick="askBrain()">ASK JARVIS</button>
+ <div class="tile">
+  <h3>Response</h3>
+  <p id="brainAnswer">The AI model connection is not configured yet.</p>
+ </div>
+ <p class="small">
+ A real reasoning model needs an authorized online service
+ and a secure backend. Never paste private API keys into this file.
+ </p>
 </section>
 
-<section class="panel">
-  <h2>03 — EXPORT YOUR WEBSITE</h2>
-  <textarea id="output" readonly
-    placeholder="Your generated HTML will appear here."></textarea>
+<!-- WEBSITE STUDIO -->
+<section class="panel page" id="web">
+ <h2>02 — WEBSITE INTELLIGENCE STUDIO</h2>
+ <p class="small">Create responsive starter websites.</p>
 
-  <button onclick="copyWebsite()">COPY HTML</button>
-  <button onclick="downloadWebsite()">DOWNLOAD HTML</button>
-  <p class="small">
-    Download creates a standalone HTML file you can edit and publish.
-  </p>
+ <label>Business name</label>
+ <input id="siteName" placeholder="Example: Nova Fitness">
+
+ <label>Website type</label>
+ <select id="siteType">
+  <option value="business">Business</option>
+  <option value="fitness">Fitness</option>
+  <option value="restaurant">Restaurant</option>
+  <option value="portfolio">Portfolio</option>
+  <option value="agency">Agency</option>
+  <option value="product">Product</option>
+ </select>
+
+ <label>Describe your website</label>
+ <textarea id="siteDescription" placeholder="Describe your business and services"></textarea>
+
+ <label>Design</label>
+ <select id="siteStyle">
+  <option value="dark">Premium dark</option>
+  <option value="light">Clean light</option>
+  <option value="luxury">Luxury</option>
+  <option value="nature">Nature</option>
+ </select>
+
+ <label>Contact email</label>
+ <input id="siteEmail" type="email" placeholder="hello@example.com">
+
+ <button onclick="buildWebsite()">BUILD WEBSITE</button>
+ <button class="secondary" onclick="resetBuilder()">RESET</button>
+
+ <h3>Live preview</h3>
+ <iframe id="preview" title="Website preview" sandbox=""></iframe>
+
+ <h3>Website HTML</h3>
+ <textarea id="output" readonly placeholder="Generated website code appears here"></textarea>
+ <button onclick="copyWebsite()">COPY HTML</button>
+ <button onclick="downloadWebsite()">DOWNLOAD HTML</button>
 </section>
 
-<footer>J.A.R.V.I.S SYSTEM — DEVELOPMENT MODE</footer>
+<!-- BUSINESS -->
+<section class="panel page" id="business">
+ <h2>03 — BUSINESS CENTER</h2>
+
+ <div class="tile">
+  <h3>Shopify Store Builder</h3>
+  <p>Plan store design, product categories and descriptions.</p>
+  <p class="status">Shopify account connection required.</p>
+ </div>
+
+ <div class="tile">
+  <h3>Business Research</h3>
+  <p>Research markets, competitors and business ideas.</p>
+  <p class="status">Live research connection required.</p>
+ </div>
+
+ <div class="tile">
+  <h3>Website Design Intelligence</h3>
+  <p>Study successful websites and create original designs.</p>
+  <p class="status">Research service integration required.</p>
+ </div>
+</section>
+
+<!-- MEDIA -->
+<section class="panel page" id="media">
+ <h2>04 — MEDIA CENTER</h2>
+
+ <div class="tile">
+  <h3>YouTube Manager</h3>
+  <p>Prepare video titles, descriptions, thumbnails and uploads.</p>
+  <p class="status">YouTube authorization required.</p>
+ </div>
+
+ <div class="tile">
+  <h3>AI Video Editor</h3>
+  <p>Plan cuts, captions, Shorts and video improvements.</p>
+  <p class="status">Video editing engine required.</p>
+ </div>
+
+ <div class="tile">
+  <h3>Advertising Studio</h3>
+  <p>Research advertising styles and create original advertisements.</p>
+  <p class="status">AI and image/video services required.</p>
+ </div>
+</section>
+
+<!-- MEMORY -->
+<section class="panel page" id="memory">
+ <h2>05 — JARVIS MEMORY</h2>
+ <p class="small">Save notes locally in this browser.</p>
+
+ <label>New memory or project note</label>
+ <textarea id="memoryInput" placeholder="Write a project note..."></textarea>
+ <button onclick="saveMemory()">SAVE NOTE</button>
+ <button class="secondary" onclick="clearMemory()">CLEAR ALL NOTES</button>
+
+ <h3>Saved notes</h3>
+ <div id="memoryList"></div>
+
+ <p class="small">
+ Notes are stored in this browser on this device.
+ They are not automatically synchronized to another device.
+ </p>
+</section>
+
+<footer>
+ J.A.R.V.I.S — DEVELOPMENT VERSION 2
+</footer>
 
 <script>
-const statusText = document.getElementById("status");
-const heardText = document.getElementById("heard");
+const statusText=document.getElementById("status");
+const heardText=document.getElementById("heard");
 
-const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
+const SpeechRecognition=
+ window.SpeechRecognition||window.webkitSpeechRecognition;
 
-let recognition = null;
-let busy = false;
+let recognition=null;
+let busy=false;
 
-function speak(message) {
-  return new Promise(resolve => {
-    speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(message);
-    speech.lang = "en-IN";
-    speech.rate = 1;
-
-    speech.onend = resolve;
-    speech.onerror = resolve;
-
-    speechSynthesis.speak(speech);
-  });
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function answer(command) {
-  if (command.includes("hello"))
-    return "Hello Sir. How can I help you?";
-
-  if (command.includes("time"))
-    return "The time is " +
-      new Date().toLocaleTimeString("en-IN");
-
-  if (command.includes("date"))
-    return "Today's date is " +
-      new Date().toLocaleDateString("en-IN");
-
-  if (command.includes("who are you"))
-    return "I am Jarvis, your personal assistant.";
-
-  if (command.includes("how are you"))
-    return "All systems are running perfectly, Sir.";
-
-  if (command.includes("your name"))
-    return "My name is Jarvis.";
-
-  if (command.includes("who created you"))
-    return "You are building me, Sir.";
-
-  if (command.includes("good morning"))
-    return "Good morning, Sir. Have a productive day.";
-
-  if (command.includes("thank you"))
-    return "You are welcome, Sir.";
-
-  if (command.includes("joke"))
-    return "Why did the computer go to the doctor? Because it had a virus.";
-
-  if (command.includes("help"))
-    return "You can ask for the time, date, or a joke, or say open website builder.";
-
-  return "I don't know that command yet. My reasoning engine is not connected.";
+function speak(message){
+ return new Promise(resolve=>{
+  if(!("speechSynthesis" in window)){resolve();return;}
+  speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(message);
+  utterance.lang="en-IN";
+  utterance.onend=resolve;
+  utterance.onerror=resolve;
+  speechSynthesis.speak(utterance);
+ });
 }
 
-function activateJarvis() {
-  if (!SpeechRecognition) {
-    statusText.innerText = "VOICE NOT SUPPORTED";
-    return;
-  }
+function activateJarvis(){
+ if(!SpeechRecognition){
+  statusText.innerText="VOICE NOT SUPPORTED";
+  return;
+ }
+ if(busy)return;
 
-  if (busy) return;
-  busy = true;
+ if(!recognition){
+  recognition=new SpeechRecognition();
+  recognition.lang="en-IN";
+  recognition.continuous=false;
+  recognition.interimResults=false;
 
-  if (!recognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-IN";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+  recognition.onstart=()=>statusText.innerText="LISTENING...";
 
-    recognition.onstart = () => {
-      statusText.innerText = "LISTENING...";
-    };
-
-    recognition.onresult = async event => {
-      const command =
-        event.results[0][0].transcript.toLowerCase();
-
-      heardText.innerText = "YOU SAID: " + command;
-      statusText.innerText = "THINKING...";
-
-      if (command.includes("website builder") ||
-          command.includes("build website")) {
-        document.querySelector("#siteName").scrollIntoView({
-          behavior: "smooth"
-        });
-        await speak("Website studio opened, Sir.");
-      } else {
-        await speak(answer(command));
-      }
-
-      statusText.innerText = "SYSTEM READY";
-      busy = false;
-    };
-
-    recognition.onerror = event => {
-      statusText.innerText = "ERROR: " + event.error;
-      busy = false;
-    };
-
-    recognition.onend = () => {
-      busy = false;
-      if (statusText.innerText === "LISTENING...") {
-        statusText.innerText = "TAP TO TRY AGAIN";
-      }
-    };
-  }
-
-  try {
-    recognition.start();
-  } catch (error) {
-    statusText.innerText = "PLEASE TRY AGAIN";
-    busy = false;
-  }
-}
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-function buildWebsite() {
-  const name =
-    document.getElementById("siteName").value.trim();
-
-  const description =
-    document.getElementById("siteDescription").value.trim();
-
-  const type =
-    document.getElementById("siteType").value;
-
-  const style =
-    document.getElementById("siteStyle").value;
-
-  const email =
-    document.getElementById("siteEmail").value.trim();
-
-  if (!name || !description) {
-    alert("Enter a website name and description first.");
-    return;
-  }
-
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
-
-  const themes = {
-    dark: {
-      bg: "#101827",
-      card: "#1c2b42",
-      text: "#ffffff",
-      accent: "#48d9ff"
-    },
-    light: {
-      bg: "#f4f7fb",
-      card: "#ffffff",
-      text: "#182337",
-      accent: "#2764d8"
-    },
-    luxury: {
-      bg: "#17130f",
-      card: "#282019",
-      text: "#fff6e7",
-      accent: "#d9b46b"
-    },
-    nature: {
-      bg: "#edf5ed",
-      card: "#ffffff",
-      text: "#203c2b",
-      accent: "#39835b"
-    }
+  recognition.onresult=async event=>{
+   const command=event.results[0][0].transcript.toLowerCase();
+   heardText.innerText="YOU SAID: "+command;
+   statusText.innerText="PROCESSING...";
+   await runVoiceCommand(command);
+   busy=false;
+   statusText.innerText="SYSTEM READY";
   };
 
-  const theme = themes[style];
-
-  const titles = {
-    business: "A better way to do business.",
-    restaurant: "Good food. Great experiences.",
-    fitness: "Build strength. Build confidence.",
-    portfolio: "Ideas brought to life.",
-    agency: "Creative thinking. Powerful results.",
-    product: "Discover something better."
+  recognition.onerror=event=>{
+   statusText.innerText="VOICE ERROR: "+event.error;
+   busy=false;
   };
 
-  const title = titles[type];
+  recognition.onend=()=>{busy=false;};
+ }
 
-  const services = {
-    business: ["Our Services", "Our Approach", "Get in Touch"],
-    restaurant: ["Our Menu", "Our Story", "Visit Us"],
-    fitness: ["Personal Training", "Group Classes", "Membership"],
-    portfolio: ["My Work", "About Me", "Let's Connect"],
-    agency: ["Our Expertise", "Our Projects", "Work With Us"],
-    product: ["Features", "Why Choose Us", "Get Started"]
-  };
+ try{
+  busy=true;
+  recognition.start();
+ }catch(e){
+  busy=false;
+  statusText.innerText="PLEASE TRY AGAIN";
+ }
+}
 
-  const safeName = escapeHTML(name);
-  const safeDescription = escapeHTML(description);
-  const safeEmail = escapeHTML(email);
+function stopVoice(){
+ if(recognition){
+  try{recognition.stop();}catch(e){}
+ }
+ if("speechSynthesis" in window)speechSynthesis.cancel();
+ busy=false;
+ statusText.innerText="VOICE STOPPED";
+}
 
-  const contact = email
-    ? `<a class="button" href="mailto:${safeEmail}">Contact Us</a>`
-    : `<a class="button" href="#contact">Contact Us</a>`;
+async function runVoiceCommand(command){
+ let response="I don't know that command yet. The online AI brain is not connected.";
 
-  const html = `<!DOCTYPE html>
+ if(command.includes("hello")){
+  response="Hello. JARVIS system ready.";
+ }
+ else if(command.includes("time")){
+  response="The time is "+new Date().toLocaleTimeString("en-IN");
+ }
+ else if(command.includes("date")){
+  response="Today's date is "+new Date().toLocaleDateString("en-IN");
+ }
+ else if(command.includes("website")||command.includes("website studio")){
+  showPage("web");
+  response="Website Studio opened.";
+ }
+ else if(command.includes("business")){
+  showPage("business");
+  response="Business Center opened.";
+ }
+ else if(command.includes("youtube")||command.includes("video")){
+  showPage("media");
+  response="Media Center opened.";
+ }
+ else if(command.includes("memory")||command.includes("notes")){
+  showPage("memory");
+  response="Memory Center opened.";
+ }
+ else if(command.includes("ai brain")){
+  showPage("brain");
+  response="AI Brain panel opened. Model connection required.";
+ }
+ else if(command.includes("who are you")){
+  response="I am JARVIS, your personal assistant project.";
+ }
+ else if(command.includes("help")){
+  response="You can open Website Studio, Business Center, Media Center, Memory or AI Brain.";
+ }
+
+ await speak(response);
+ heardText.innerText=response;
+}
+
+function runCommand(){
+ const command=document.getElementById("quickCommand").value.toLowerCase();
+ runVoiceCommand(command);
+}
+
+function askBrain(){
+ const question=document.getElementById("question").value.trim();
+ if(!question){
+  alert("Enter a question first.");
+  return;
+ }
+ document.getElementById("brainAnswer").innerText=
+ "The reasoning model is not connected yet. Your question is ready for the future AI connection: "+question;
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[c]);
+}
+
+function buildWebsite(){
+ const name=document.getElementById("siteName").value.trim();
+ const description=document.getElementById("siteDescription").value.trim();
+ const type=document.getElementById("siteType").value;
+ const style=document.getElementById("siteStyle").value;
+ const email=document.getElementById("siteEmail").value.trim();
+
+ if(!name||!description){
+  alert("Enter a business name and description.");
+  return;
+ }
+
+ if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  alert("Enter a valid email address.");
+  return;
+ }
+
+ const themes={
+  dark:["#101827","#1c2b42","#ffffff","#48d9ff"],
+  light:["#f4f7fb","#ffffff","#182337","#2764d8"],
+  luxury:["#17130f","#282019","#fff6e7","#d9b46b"],
+  nature:["#edf5ed","#ffffff","#203c2b","#39835b"]
+ };
+
+ const t=themes[style];
+ const titles={
+  business:"A better way to do business.",
+  fitness:"Build strength. Build confidence.",
+  restaurant:"Good food. Great experiences.",
+  portfolio:"Ideas brought to life.",
+  agency:"Creative thinking. Powerful results.",
+  product:"Discover something better."
+ };
+
+ const sections={
+  business:["Our Services","Our Approach","Get in Touch"],
+  fitness:["Personal Training","Group Classes","Membership"],
+  restaurant:["Our Menu","Our Story","Visit Us"],
+  portfolio:["My Work","About Me","Let's Connect"],
+  agency:["Our Expertise","Our Projects","Work With Us"],
+  product:["Features","Why Choose Us","Get Started"]
+ };
+
+ const n=escapeHTML(name);
+ const d=escapeHTML(description);
+ const e=escapeHTML(email);
+ const title=titles[type];
+ const s=sections[type];
+
+ const html=`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${safeName}</title>
-<meta name="description" content="${safeDescription}">
+<title>${n}</title>
+<meta name="description" content="${d}">
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: ${theme.bg};
-  color: ${theme.text};
-  line-height: 1.6;
-}
-nav {
-  padding: 20px 7%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  border-bottom: 1px solid ${theme.accent}55;
-}
-.logo {
-  font-size: 23px;
-  font-weight: bold;
-}
-nav a {
-  color: ${theme.text};
-  text-decoration: none;
-  margin-left: 15px;
-}
-.hero {
-  padding: 100px 8%;
-  text-align: center;
-}
-.hero h1 {
-  font-size: clamp(38px, 7vw, 68px);
-  line-height: 1.1;
-  max-width: 850px;
-  margin: 0 auto 20px;
-}
-.hero p {
-  max-width: 650px;
-  margin: 20px auto 30px;
-  font-size: 18px;
-  opacity: .85;
-}
-.button {
-  display: inline-block;
-  background: ${theme.accent};
-  color: ${theme.bg};
-  text-decoration: none;
-  font-weight: bold;
-  padding: 14px 25px;
-  border-radius: 7px;
-}
-.section {
-  padding: 65px 8%;
-  text-align: center;
-}
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-.card {
-  padding: 28px;
-  border-radius: 12px;
-  background: ${theme.card};
-  text-align: left;
-  border: 1px solid ${theme.accent}44;
-}
-.card h3 { color: ${theme.accent}; }
-.about {
-  max-width: 750px;
-  margin: auto;
-}
-.contact {
-  text-align: center;
-  padding: 65px 15px;
-  background: ${theme.card};
-}
-footer {
-  padding: 25px;
-  text-align: center;
-  opacity: .7;
-}
-@media(max-width:600px) {
-  nav { justify-content: center; }
-  nav a { margin: 5px; }
-  .hero { padding: 70px 6%; }
-}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:${t[0]};color:${t[2]};line-height:1.6}
+nav{padding:20px 7%;display:flex;justify-content:space-between;flex-wrap:wrap}
+nav a{color:${t[2]};text-decoration:none;margin:8px}
+.hero{text-align:center;padding:90px 7%}
+.hero h1{font-size:clamp(36px,7vw,65px)}
+.hero p{max-width:650px;margin:20px auto}
+.button{display:inline-block;background:${t[3]};color:${t[0]};padding:13px 22px;text-decoration:none;border-radius:8px;font-weight:bold}
+.section{text-align:center;padding:60px 7%}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.card{background:${t[1]};padding:25px;border-radius:12px;text-align:left}
+.card h3{color:${t[3]}}
+.contact{text-align:center;background:${t[1]};padding:55px 10px}
+footer{text-align:center;padding:25px}
 </style>
 </head>
 <body>
-
-<nav>
-  <div class="logo">${safeName}</div>
-  <div>
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
+<nav><strong>${n}</strong>
+<div><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></div>
 </nav>
-
 <section class="hero">
-  <h1>${escapeHTML(title)}</h1>
-  <p>${safeDescription}</p>
-  ${contact}
+<h1>${escapeHTML(title)}</h1><p>${d}</p>
+<a class="button" href="#contact">Contact Us</a>
 </section>
-
 <section class="section" id="services">
-  <h2>${escapeHTML(services[type][0])}</h2>
-  <div class="cards">
-    ${services[type].map((item, index) => `
-      <div class="card">
-        <h3>${escapeHTML(item)}</h3>
-        <p>${index === 0
-          ? safeDescription
-          : "Discover how we can help you. Get in touch to learn more."}</p>
-      </div>
-    `).join("")}
-  </div>
+<h2>${escapeHTML(s[0])}</h2>
+<div class="cards">
+${s.map((item,i)=>`<div class="card"><h3>${escapeHTML(item)}</h3><p>${i===0?d:"Discover how we can help you. Get in touch to learn more."}</p></div>`).join("")}
+</div>
 </section>
-
 <section class="section" id="about">
-  <div class="about">
-    <h2>${escapeHTML(services[type][1])}</h2>
-    <p>${safeDescription}</p>
-  </div>
+<h2>${escapeHTML(s[1])}</h2><p>${d}</p>
 </section>
-
 <section class="contact" id="contact">
-  <h2>${escapeHTML(services[type][2])}</h2>
-  <p>Ready to take the next step?</p>
-  ${email
-    ? `<a class="button" href="mailto:${safeEmail}">Email Us</a>`
-    : `<p>Add a real contact email before publishing.</p>`}
+<h2>${escapeHTML(s[2])}</h2>
+${email?`<a class="button" href="mailto:${e}">Email Us</a>`:"<p>Add a real contact email before publishing.</p>"}
 </section>
+<footer>© ${new Date().getFullYear()} ${n}. All rights reserved.</footer>
+</body></html>`;
 
-<footer>
-  © ${new Date().getFullYear()} ${safeName}. All rights reserved.
-</footer>
-
-</body>
-</html>`;
-
-  document.getElementById("output").value = html;
-  document.getElementById("preview").srcdoc = html;
-
-  statusText.innerText = "WEBSITE CREATED";
-  speak("Your website draft is ready, Sir.");
+ document.getElementById("output").value=html;
+ document.getElementById("preview").srcdoc=html;
+ statusText.innerText="WEBSITE DRAFT CREATED";
+ speak("Your website draft is ready.");
 }
 
-async function copyWebsite() {
-  const output = document.getElementById("output");
-
-  if (!output.value) {
-    alert("Build a website first.");
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(output.value);
-    alert("Website HTML copied!");
-  } catch (error) {
-    output.select();
-    alert("Select and copy the HTML manually.");
-  }
+async function copyWebsite(){
+ const output=document.getElementById("output");
+ if(!output.value){alert("Build a website first.");return;}
+ try{
+  await navigator.clipboard.writeText(output.value);
+  alert("HTML copied.");
+ }catch(e){
+  output.select();
+  alert("Select and copy the code manually.");
+ }
 }
 
-function downloadWebsite() {
-  const html = document.getElementById("output").value;
-
-  if (!html) {
-    alert("Build a website first.");
-    return;
-  }
-
-  const blob = new Blob([html], {type: "text/html"});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "my-website.html";
-  link.click();
-
-  URL.revokeObjectURL(url);
+function downloadWebsite(){
+ const html=document.getElementById("output").value;
+ if(!html){alert("Build a website first.");return;}
+ const blob=new Blob([html],{type:"text/html"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="my-website.html";
+ a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-function resetBuilder() {
-  document.getElementById("siteName").value = "";
-  document.getElementById("siteDescription").value = "";
-  document.getElementById("siteEmail").value = "";
-  document.getElementById("output").value = "";
-  document.getElementById("preview").srcdoc = "";
-  statusText.innerText = "SYSTEM READY";
+function resetBuilder(){
+ ["siteName","siteDescription","siteEmail","output"].forEach(id=>{
+  document.getElementById(id).value="";
+ });
+ document.getElementById("preview").srcdoc="";
+ statusText.innerText="SYSTEM READY";
 }
+
+function getMemories(){
+ try{return JSON.parse(localStorage.getItem("jarvisNotes")||"[]");}
+ catch(e){return [];}
+}
+
+function saveMemory(){
+ const input=document.getElementById("memoryInput");
+ const note=input.value.trim();
+ if(!note){alert("Write a note first.");return;}
+ const notes=getMemories();
+ notes.push({text:note,date:new Date().toLocaleString()});
+ localStorage.setItem("jarvisNotes",JSON.stringify(notes));
+ input.value="";
+ renderMemories();
+}
+
+function renderMemories(){
+ const list=document.getElementById("memoryList");
+ const notes=getMemories();
+ list.innerHTML="";
+ if(!notes.length){
+  list.textContent="No saved notes yet.";
+  return;
+ }
+ notes.forEach(note=>{
+  const item=document.createElement("div");
+  item.className="tile";
+  const p=document.createElement("p");
+  p.textContent=note.text;
+  const date=document.createElement("small");
+  date.textContent=note.date;
+  item.append(p,date);
+  list.appendChild(item);
+ });
+}
+
+function clearMemory(){
+ if(!confirm("Delete all locally saved notes?"))return;
+ localStorage.removeItem("jarvisNotes");
+ renderMemories();
+}
+
+renderMemories();
 </script>
-
 </body>
 </html>
