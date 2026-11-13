@@ -1,3 +1,4 @@
+
 {
   "id": "./",
   "name": "JARVIS",
@@ -8,5 +9,13 @@
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#06111f",
-  "background_color": "#06111f"
+  "background_color": "#06111f",
+  "icons": [
+    {
+      "src": "./jarvis-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
+
