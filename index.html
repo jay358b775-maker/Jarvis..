@@ -69,6 +69,8 @@ iframe{
 }
 footer{text-align:center;color:#7894a5;padding:25px}
 </style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#06111f">
 </head>
 
 <body>
@@ -583,6 +585,14 @@ function clearMemory(){
 }
 
 renderMemories();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(error => console.log("SW error:", error));
+  });
+}
 </script>
 </body>
 </html>
