@@ -1,0 +1,30 @@
+const http = require("http");
+
+const PORT = process.env.PORT || 3000;
+
+const server = http.createServer((req, res) => {
+  res.setHeader("Content-Type", "application/json");
+
+  if (req.method === "GET" && req.url === "/health") {
+    res.writeHead(200);
+    return res.end(JSON.stringify({
+      name: "JARVIS",
+      backend: "online",
+      ai: "not connected"
+    }));
+  }
+
+  if (req.method === "POST" && req.url === "/think") {
+    res.writeHead(501);
+    return res.end(JSON.stringify({
+      error: "AI model connection is not configured yet."
+    }));
+  }
+
+  res.writeHead(404);
+  res.end(JSON.stringify({ error: "Not found" }));
+});
+
+server.listen(PORT, () => {
+  console.log(`JARVIS backend running on port ${PORT}`);
+});
