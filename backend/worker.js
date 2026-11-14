@@ -1,3 +1,5 @@
+import { think } from "./ai-engine.js";
+
 export default {
   async fetch(request, env) {
     const cors = {
@@ -12,18 +14,28 @@ export default {
 
     const url = new URL(request.url);
 
-    if (url.pathname === "/health") {
+    if (url.pathname === "/health" && request.method === "GET") {
       return Response.json({
         name: "JARVIS",
         status: "online",
-        ai: "not connected"
+        ai: "waiting for provider setup"
       }, { headers: cors });
     }
 
     if (url.pathname === "/think" && request.method === "POST") {
-      return Response.json({
-        message: "JARVIS AI connection is pending."
-      }, { status: 501, headers: cors });
+      try {
+        const body = await request.json();
+        const result = await think(body.message, env);
+
+        return Response.json(result, { headers: cors });
+      } catch (error) {
+        return Response.json({
+          error: "JARVIS could not process that request."
+        }, {
+          status: 400,
+          headers: cors
+        });
+      }
     }
 
     return Response.json(
